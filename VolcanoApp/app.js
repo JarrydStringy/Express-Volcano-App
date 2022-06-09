@@ -1,21 +1,26 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+//Knex setup
 const options = require('./knexfile.js');
 const knex = require('knex')(options);
-const cors = require('cors')
-const swaggerUI = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
-require('dotenv').config()
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const cors = require('cors');
 
-var app = express();
+const app = express();
 
+//Routes
+const usersRouter = require('./routes/users');
+const swaggerRouter = require('./routes/swagger');
+const countriesRouter = require('./routes/countries');
+const volcanoesRouter = require('./routes/volcanoes');
+const identifyMeRouter = require('./routes/me');
+
+require('dotenv').config();
+
+//Connect to db
 app.use((req, res, next) => {
   req.db = knex;
   next();
@@ -46,9 +51,14 @@ app.get('/knex', function (req, res, next) {
   res.send("Version Logged Successfully");
 });
 
-app.use('/', indexRouter);
-app.use('/', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+//Use the routes
 app.use('/users', usersRouter);
+app.use('/countries', countriesRouter);
+app.use('/volcanoes', volcanoesRouter);
+app.use('/volcano', volcanoesRouter);
+app.use('/', swaggerRouter);
+app.use('/me', identifyMeRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
