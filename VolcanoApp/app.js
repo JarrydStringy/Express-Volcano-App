@@ -52,13 +52,12 @@ app.get('/knex', function (req, res, next) {
 });
 
 //Use the routes
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 app.use('/countries', countriesRouter);
 app.use('/volcanoes', volcanoesRouter);
 app.use('/volcano', volcanoesRouter);
 app.use('/', swaggerRouter);
 app.use('/me', identifyMeRouter);
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
